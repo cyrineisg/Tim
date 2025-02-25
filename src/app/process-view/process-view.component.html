@@ -1,0 +1,115 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title class="ion-text-center">{{ processDesignation || 'Loading process title...' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="!isLoading; else loading">
+  <ion-segment [(ngModel)]="selectedTab">
+    <ion-segment-button value="checklist" (click)="selectTab('checklist')">
+      Checklist
+    </ion-segment-button>
+    <ion-segment-button value="details" (click)="selectTab('details')">
+      Details
+    </ion-segment-button>
+  </ion-segment>
+
+  <div *ngIf="selectedTab === 'checklist'">
+    <ion-grid>
+  
+      <!-- Légende des abréviations -->
+      <ion-row class="ion-justify-content-center">
+        <ion-col class="ion-text-center abbr-container">
+          <ion-badge color="warning" class="circle-badge">V</ion-badge>
+          <span class="abbr-text">Vérifié</span>
+        </ion-col>
+        <ion-col class="ion-text-center abbr-container">
+          <ion-badge color="primary" class="circle-badge">C</ion-badge>
+          <span class="abbr-text">Conforme</span>
+        </ion-col>
+        <ion-col class="ion-text-center abbr-container">
+          <ion-badge color="danger" class="circle-badge">N.C</ion-badge>
+          <span class="abbr-text">Non Conforme</span>
+        </ion-col>
+        <ion-col class="ion-text-center abbr-container">
+          <ion-badge color="success" class="circle-badge">C.A</ion-badge>
+          <span class="abbr-text">Conforme et Applicable</span>
+        </ion-col>
+      </ion-row>
+  
+      <!-- En-tête du tableau -->
+      <ion-row class="header-row">
+        <ion-col class="header-cell small-cell">Critère</ion-col>
+        <ion-col class="header-cell">Exigence</ion-col>
+        <ion-col class="header-cell">Pondération</ion-col>
+        <ion-col class="header-cell circles-header">
+          <ion-badge color="warning" class="circle-badge">V</ion-badge>
+          <ion-badge color="primary" class="circle-badge">C</ion-badge>
+          <ion-badge color="danger" class="circle-badge">N.C</ion-badge>
+          <ion-badge color="success" class="circle-badge">C.A</ion-badge>
+        </ion-col>
+      </ion-row>
+
+      
+      <!-- Lignes dynamiques -->
+      <ion-row *ngFor="let item of checklistItems" class="data-row">
+        <ion-col>{{ item.question }}</ion-col>
+        <ion-col>{{ item.requirement }}</ion-col>
+        <ion-col>{{ item.weighting }}</ion-col>
+  
+        <!-- Checkbox pour "Vérifié(e)" -->
+        <ion-col class="checkbox-column">
+          <ion-checkbox [checked]="item.stateStr === 'Vérifié(e)'"></ion-checkbox>
+        </ion-col>
+  
+        <!-- Trois CheckBox pour Conformité -->
+        <ion-col class="checkbox-column">
+          <ion-checkbox [checked]="item.conformityStr === 'Conforme'"></ion-checkbox> Conforme
+          <ion-checkbox [checked]="item.conformityStr === 'Non Conforme'"></ion-checkbox> Non Conforme
+          <ion-checkbox [checked]="item.conformityStr === 'Conforme et Applicable'"></ion-checkbox> C.A
+        </ion-col>
+
+        <!-- Icône de document entourée d'un cercle grisé -->
+        <ion-col class="document-icon-container">
+          <ion-icon name="document-text-outline" (click)="goToProcessProof()"></ion-icon>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+  
+  
+
+  <div *ngIf="selectedTab === 'details'">
+    <h3>Process Details</h3>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Weakness</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-textarea [(ngModel)]="weakness" autoGrow="true"></ion-textarea>
+      </ion-card-content>
+    </ion-card>
+  
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Strength</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-textarea [(ngModel)]="strength" autoGrow="true"></ion-textarea>
+      </ion-card-content>
+    </ion-card>
+  
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Recommendation</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-textarea [(ngModel)]="recommendation" autoGrow="true"></ion-textarea>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
+
+<ng-template #loading>
+  <ion-spinner name="crescent"></ion-spinner> <!-- Show a loading spinner until data is fetched -->
+</ng-template>

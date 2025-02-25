@@ -1,0 +1,38 @@
+<ion-content>
+
+  <!-- Loading Indicator -->
+  <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+
+  <!-- Process List -->
+  <div *ngIf="!isLoading && processes.length > 0" class="process-list-container">
+    <ion-card class="process-card" *ngFor="let process of processes">
+      <ion-card-header>
+        <ion-card-title>{{ process.processDesignation || 'No Designation Found' }}</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <div class="process-details">
+          <p><strong>Checklist Score:</strong> {{ process.checklistScore || 'No checklist' }}</p>
+          <p><strong>Strengths:</strong> {{ process.strength || 'No strengths found' }}</p>
+          <p><strong>Weakness:</strong> {{ process.weakness || 'No weakness found' }}</p>
+        </div>
+
+        <!-- Icons -->
+        <div class="icon-container">
+          <ion-icon name="eye" (click)="viewProcess(process.auditId, process.processId)"></ion-icon>
+          <ion-icon name="create"></ion-icon>
+          <ion-icon name="trash"></ion-icon>
+          <ion-icon name="more"></ion-icon>
+        </div>
+        
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- No Processes Found Message -->
+  <div *ngIf="!isLoading && processes.length === 0" class="no-data">
+    <ion-text color="medium">
+      <p>No processes found for this audit.</p>
+    </ion-text>
+  </div>
+</ion-content>

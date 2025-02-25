@@ -1,0 +1,62 @@
+<!-- On doit enchainer avec la partie de rich text avec devExpress -->
+
+<!-- Icônes d'action -->
+<div class="icon-container">
+  <ion-icon name="camera" class="action-icon" ></ion-icon>
+  <ion-icon name="mic" class="action-icon" (click)="startRecording()" *ngIf="!isRecording"></ion-icon>
+  <ion-icon name="videocam" class="action-icon"></ion-icon>
+</div>
+
+<!-- Boutons de contrôle d'enregistrement -->
+<div class="audio-controls" *ngIf="isRecording">
+  <button (click)="pauseRecording()" *ngIf="!isPaused">⏸ Pause</button>
+  <button (click)="resumeRecording()" *ngIf="isPaused">▶ Reprendre</button>
+  <button (click)="stopRecording()">⏹ Arrêter</button>
+  <canvas #visualizer width="300" height="100"></canvas>
+</div>
+
+<!-- Zone Drag & Drop -->
+<div class="drag-drop-area"
+     (dragover)="onDragOver($event)"
+     (dragleave)="onDragLeave($event)"
+     (drop)="onDrop($event)">
+  <p>Déposez vos fichiers ici</p>
+  <p>ou</p>
+  <input type="file" (change)="onFileSelected($event)" multiple />
+</div>
+
+<!-- Affichage des fichiers ajoutés -->
+<ul *ngIf="files.length > 0">
+  <li *ngFor="let file of files">
+    <strong>{{ file.name }}</strong> ({{ file.type || 'Inconnu' }})
+
+    <audio *ngIf="file.type.startsWith('audio')" controls>
+      <source [src]="file.url" type="{{ file.type }}">
+      Votre navigateur ne supporte pas l'élément audio.
+    </audio>
+  </li>
+</ul>
+
+
+<!-- Section Commentaires -->
+<div class="comment-section">
+  <h3>Commentaires</h3>
+
+  <!-- Éditeur de texte enrichi -->
+<dx-html-editor [(value)]="commentText" 
+  height="200px" 
+  [toolbar]="{ items: ['bold', 'italic', 'underline', 'strike', 'alignLeft', 'alignCenter', 'alignRight', 'alignJustify', 'orderedList', 'bulletList', 'link'] }">
+</dx-html-editor>
+
+  <!-- Bouton pour ajouter le commentaire -->
+  <button (click)="addComment()" class="submit-comment">Ajouter</button>
+
+  <!-- Liste des commentaires -->
+  <ul class="comment-list" *ngIf="comments.length > 0">
+    <li class="comment-item" *ngFor="let comment of comments">
+      <p [innerHTML]="comment.content"></p>
+      <small>{{ comment.date | date: 'short' }}</small>
+    </li>
+  </ul>
+</div>
+
